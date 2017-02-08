@@ -1,0 +1,28 @@
+{
+  "name": "Airbnb_Yelp_Overlay",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description" : "Airbnb listings shown on a map with Yelp Listings",
+  "permissions": [
+    "tabs",
+    "http://maps.google.com/",
+    "https://ajax.googleapis.com/",
+    "https://maps.google.com/*",
+    "https://maps.googleapis.com/*",
+    "https://maps.gstatic.com/*",
+    "http://localhost/*"
+  ],
+  "content_security_policy": "default-src 'self' https://maps.google.com/ https://maps.googleapis.com/ https://maps.gstatic.com/; object-src 'self'; style-src 'unsafe-inline' *;",
+  "browser_action": {
+     "default_icon": "icon.png",
+     "default_title": "Airbnb_Yelp_Overlay",
+     "default_popup": "yelp_map.html"
+  },
+  "sandbox": {
+     "pages": ["sandbox.html"],
+  "content_scripts": [{
+    "matches": ["http://www.airbnb.com/rooms/*", "https://www.airbnb.com/rooms/*"],
+    "css":["css/map_viewer.css"]
+  }]
+}
+}
