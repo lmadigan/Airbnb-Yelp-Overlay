@@ -87980,41 +87980,55 @@ let lat = "";
 let lng = "";
 const markers = [];
 let yelpMap = {};
+let myLatlng = "";
+let latLongs = [];
 
 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
     lat = response.lat;
     lng = response.lng;
-    initialize(lat, lng);
+    myLatlng = new google.maps.LatLng(lat, lng);
+    geocodeLatLng();
   });
 });
 
 
 
 // // var Yelp = require('yelp');
-function initialize(latitude, longitude) {
-  var myLatlng = new google.maps.LatLng(latitude, longitude);
-  console.log(myLatlng);
+function initialize() {
+
   var mapOptions = {
-    zoom: 15,
+    zoom: 16,
     center: myLatlng
   };
   yelpMap = new google.maps.Map(document.getElementById("map"), mapOptions);
 
 
-  var marker = new google.maps.Marker({
-      position: myLatlng,
-      map: yelpMap,
-      title:"Here's the stuff!"
-  });
-  markers.push(marker);
+  // var marker = new google.maps.Marker({
+  //     position: myLatlng,
+  //     map: yelpMap,
+  //     title:"Here's the stuff!"
+  // });
+  console.log(latLongs);
 
-  var geocoder = new google.maps.Geocoder;
-  geocodeLatLng(geocoder, myLatlng);
+  for(let i=0; i < latLongs.length; i++){
+    var marker1 = new google.maps.Marker({
+         position: latLongs[i],
+         map: yelpMap
+       });
+  }
+
+  let marker = new google.maps.Marker({
+       position: {lat: 50, lng: 10},
+       map: yelpMap
+     });
+
+     markers.push(marker);
 
 }
 
-function geocodeLatLng(geocoder, myLatlng) {
+function geocodeLatLng() {
+    var geocoder = new google.maps.Geocoder;
       console.log("geocoding!!!");
       let location = "";
       geocoder.geocode({'location': myLatlng}, function(results, status) {
@@ -88107,27 +88121,29 @@ function setYelp(location) {
 }
 
 
-function setYelpListings(body, map) {
+function setYelpListings(body) {
   for(let i=0; i < body.businesses.length; i++){
     let yelpLat = body.businesses[i].location.coordinate.latitude;
     let yelpLong = body.businesses[i].location.coordinate.longitude;
-    addMarkers(yelpLat, yelpLong);
+      var latLng = new google.maps.LatLng(yelpLat, yelpLong);
+      latLongs.push(latLng);
     }
+  initialize();
   }
 
 
-function addMarkers(latitude, long) {
-  var latLng = new google.maps.LatLng(latitude, long);
-  console.log(latLng);
-  var marker = new google.maps.Marker({
-     position: latLng,
-     yelpMap
-   });
-  google.maps.event.addListener(marker, 'click', function() {
-  });
-  console.log(yelpMap);
-  markers.push(marker);
-  console.log(markers);
-  }
+// function addMarkers(latitude, long) {
+//
+//   console.log(latLng);
+//   var marker = new google.maps.Marker({
+//      position: latLng,
+//      yelpMap
+//    });
+//   google.maps.event.addListener(marker, 'click', function() {
+//   });
+//   console.log(yelpMap);
+//   markers.push(marker);
+//   console.log(markers);
+//   }
 
 },{"lodash":266,"nonce":270,"oauth-signature":272,"querystring":131,"request":280}]},{},[339]);
