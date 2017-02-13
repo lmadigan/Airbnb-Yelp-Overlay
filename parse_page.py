@@ -1,9 +1,11 @@
 from lxml import html
 import requests
 from bs4 import BeautifulSoup
+from flask import Flask
+app = Flask(__name__)
 
-def process_url(url)
-    # page = requests.get('https://www.airbnb.com/rooms/227430?checkin=02%2F22%2F2017&checkout=02%2F27%2F2017&adults=1&children=0&infants=0&s=w4Cv3ntG')
+@app.route("/", methods=['GET', 'POST'])
+def process_url(url):
     page = requests.get(url)
 
     soup = BeautifulSoup(page.text, "lxml")
@@ -15,4 +17,7 @@ def process_url(url)
     latitude = float(lat[0:8])
     longitude = float(log['content'][0:8])
 
-    console.log(latitude, longitude)
+    return(latitude, longitude)
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=8801)
