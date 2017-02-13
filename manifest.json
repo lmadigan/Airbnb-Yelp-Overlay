@@ -10,7 +10,7 @@
     "https://maps.google.com/*",
     "https://maps.googleapis.com/*",
     "https://maps.gstatic.com/",
-    "http://localhost/*"
+    "https://api.yelp.com/*"
   ],
   "content_security_policy": "default-src 'self' https://api.yelp.com/ https://www.airbnb.com/ https://maps.google.com/ https://maps.googleapis.com/ https://maps.gstatic.com/ https://fonts.gstatic.com/; object-src 'self'; style-src 'unsafe-inline' *;",
   "browser_action": {
