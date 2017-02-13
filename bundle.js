@@ -87988,6 +87988,7 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     lat = response.lat;
     lng = response.lng;
     myLatlng = new google.maps.LatLng(lat, lng);
+    console.log(myLatlng);
     geocodeLatLng();
   });
 });
@@ -87995,41 +87996,49 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 
 
 // // var Yelp = require('yelp');
-function initialize() {
-
+function initialize(body) {
+  console.log(body);
   var mapOptions = {
-    zoom: 16,
+    zoom: 15,
     center: myLatlng
   };
   yelpMap = new google.maps.Map(document.getElementById("map"), mapOptions);
 
 
-  // var marker = new google.maps.Marker({
-  //     position: myLatlng,
-  //     map: yelpMap,
-  //     title:"Here's the stuff!"
-  // });
-  console.log(latLongs);
+  var marker = new google.maps.Marker({
+      position: myLatlng,
+      icon: './icons/pink-marker.png',
+      map: yelpMap,
+      title:"Here's the stuff!"
+  });
 
-  for(let i=0; i < latLongs.length; i++){
-    var marker1 = new google.maps.Marker({
-         position: latLongs[i],
-         map: yelpMap
-       });
+  markers.push(marker);
+
+  for(let i = 0; i < body.length; i++){
+    addPlace(body[i]);
   }
-
-  let marker = new google.maps.Marker({
-       position: {lat: 50, lng: 10},
-       map: yelpMap
-     });
-
-     markers.push(marker);
-
 }
+
+function addPlace( place ) {
+  console.log("adding place");
+  let la = place.location.coordinate.latitude;
+  let lo = place.location.coordinate.longitude;
+    // Creating a marker and putting it on the map
+    var marker = new google.maps.Marker({
+        position: {lat: la, lng: lo},
+        map: yelpMap,
+        title: place.name
+    });
+
+    // Attaching a click event to the current marker
+    google.maps.event.addListener( marker, "click", function(e) {
+        console.log(marker.title);
+    });
+}
+
 
 function geocodeLatLng() {
     var geocoder = new google.maps.Geocoder;
-      console.log("geocoding!!!");
       let location = "";
       geocoder.geocode({'location': myLatlng}, function(results, status) {
         if (status === 'OK') {
@@ -88071,12 +88080,11 @@ function setYelp(location) {
   var url = 'https://api.yelp.com/v2/search';
 
   /* We can setup default parameters here */
-  // let stringLat = latitude.toString();
-  // let stringLong = longitude.toString();
 
   var default_parameters = {
     location: location,
-    sort: '2'
+    sort: '1',
+    radius_filter: '2000'
   };
 
   /* We set the require parameters here */
@@ -88108,15 +88116,14 @@ function setYelp(location) {
 
   /* Add the query string to the url */
   var apiURL = url+'?'+paramURL;
-
+  console.log(apiURL);
   /* Then we use request to send make the API Request */
   request(apiURL, function(error, response, body){
     console.log(response);
     console.log(error);
     let jBody = JSON.parse(body);
-    console.log(jBody);
     console.log(jBody.businesses[0]);
-    setYelpListings(jBody);
+    initialize(jBody.businesses);
   });
 }
 
@@ -88125,12 +88132,14 @@ function setYelpListings(body) {
   for(let i=0; i < body.businesses.length; i++){
     let yelpLat = body.businesses[i].location.coordinate.latitude;
     let yelpLong = body.businesses[i].location.coordinate.longitude;
-      var latLng = new google.maps.LatLng(yelpLat, yelpLong);
-      latLongs.push(latLng);
+      // var latLng = new google.maps.LatLng(yelpLat, yelpLong);
+      latLongs.push({lat: yelpLat, lng: yelpLong});
     }
-  initialize();
+    initialize();
   }
 
+// google.maps.event.addDomListener(window, 'load', initialize);
+// google.maps.event.trigger(yelpMap, 'resize');
 
 // function addMarkers(latitude, long) {
 //
