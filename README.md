@@ -15,11 +15,9 @@ Sushi Attack! was implemented with the following technologies:
  - `Browserify` to bundle all necessary requirements
 
 ## Features and Implementation
-
-![](/docs/sausalito_video.mov)
 ![](/docs/example.png)
 
-Parses through webpage content to find geolocation of the Airbnb Listing. It then uses this location to generate a request to `https://api.yelp.com/v2/search` and queries for listings within a 1 mile radius of the Airbnb Listing. It translates the response into JSON, so that it can be easily formatted as listings on a Google Map. 
+This chrome extension parses through webpage content to find geolocation of the Airbnb Listing. It then uses this location to generate a request to `https://api.yelp.com/v2/search` and queries for listings within a 1 mile radius of the rental. The Yelp response is translated into JSON and the top hits are displayed on a map to show distance from the rental.
 
 
 ## Future Features
