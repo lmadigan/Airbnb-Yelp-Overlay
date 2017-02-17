@@ -1,6 +1,6 @@
 {
-  "name": "Airbnb_Yelp_Overlay",
-  "version": "1.0",
+  "name": "Airbnb Yelp Overlay",
+  "version": "1.2",
   "manifest_version": 2,
   "description" : "Airbnb listings shown on a map with Yelp Listings",
   "permissions": [
@@ -10,16 +10,18 @@
     "https://maps.google.com/*",
     "https://maps.googleapis.com/*",
     "https://maps.gstatic.com/",
-    "https://api.yelp.com/*"
+    "https://api.yelp.com/*",
+    "https://s3-media2.fl.yelpcdn.com/*",
+    "https://s3-media4.fl.yelpcdn.com/*",
+    "https://s3-media3.fl.yelpcdn.com/*",
+    "https://s3-media1.fl.yelpcdn.com/*",
+    "https://www.yelp.com/"
   ],
-  "content_security_policy": "default-src 'self' https://api.yelp.com/ https://www.airbnb.com/ https://maps.google.com/ https://maps.googleapis.com/ https://maps.gstatic.com/ https://fonts.gstatic.com/; object-src 'self'; style-src 'unsafe-inline' *;",
+  "content_security_policy": "default-src 'self' https://www.yelp.com/ https://s3-media1.fl.yelpcdn.com/ https://s3-media3.fl.yelpcdn.com/ https://s3-media4.fl.yelpcdn.com/ https://s3-media2.fl.yelpcdn.com/  https://api.yelp.com/ https://csi.gstatic.com/ https://www.airbnb.com/ https://maps.google.com/ https://maps.googleapis.com/ https://maps.gstatic.com/ https://fonts.gstatic.com/; object-src 'self'; style-src 'unsafe-inline' *;",
   "browser_action": {
      "default_icon": "icon.png",
      "default_title": "Airbnb_Yelp_Overlay",
      "default_popup": "yelp_map.html"
-  },
-  "background": {
-    "scripts": ["background.js"]
   },
   "content_scripts": [{
     "matches": ["http://www.airbnb.com/rooms/*", "https://www.airbnb.com/rooms/*"],

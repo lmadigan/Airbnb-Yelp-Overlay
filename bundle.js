@@ -87976,12 +87976,17 @@ var request = require('request');
 var qs = require('querystring');
 var _ = require('lodash');
 
+
 let lat = "";
 let lng = "";
 const markers = [];
 let yelpMap = {};
 let myLatlng = "";
-let latLongs = [];
+let lats = [];
+let longs = [];
+let avgLat = 0;
+let avgLong = 0;
+let activeWindow = "";
 
 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
@@ -87999,7 +88004,7 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 function initialize(body) {
   console.log(body);
   var mapOptions = {
-    zoom: 15,
+    zoom: 14,
     center: myLatlng
   };
   yelpMap = new google.maps.Map(document.getElementById("map"), mapOptions);
@@ -88007,7 +88012,7 @@ function initialize(body) {
 
   var marker = new google.maps.Marker({
       position: myLatlng,
-      icon: './icons/pink-marker.png',
+      icon: './icons/blue_pin.png',
       map: yelpMap,
       title:"Here's the stuff!"
   });
@@ -88017,23 +88022,86 @@ function initialize(body) {
   for(let i = 0; i < body.length; i++){
     addPlace(body[i]);
   }
+
 }
 
 function addPlace( place ) {
   console.log("adding place");
   let la = place.location.coordinate.latitude;
   let lo = place.location.coordinate.longitude;
-    // Creating a marker and putting it on the map
+    longs.push(lo);
     var marker = new google.maps.Marker({
         position: {lat: la, lng: lo},
         map: yelpMap,
-        title: place.name
+        title: place.name,
+        url: place.url
     });
+
+    var address1 = place.location.display_address[0] !== undefined ? place.location.display_address[0] : "";
+    var address2 = place.location.display_address[1] !== undefined ? place.location.display_address[1] : "";
+
+
+    var contentString = `<div id="content">`+
+      '<div id="siteNotice">'+
+      `<h1 id="firstHeading" class="firstHeading">${place.name}</h1>`+
+      '<div id="bodyContent">'+
+      `<img src=${place.rating_img_url} alt="stars" height="20" width="105">` +
+      `<h3>${place.review_count} reviews </h3>` +
+      `<h2 id="categories">${place.categories}</h2>` +
+      `<h2>${address1}</h2>` +
+      `<h2>${address2}</h2>` +
+      '</div>'+
+      '</div>'+
+      '<div id="photo-content">' +
+      `<img src=${place.image_url} alt="image" height="125" width="120">` +
+      '</div>' +
+      '</div>';
+
+    var infowindow = new google.maps.InfoWindow({
+    content: contentString
+  });
+
+
+
+    $('#content').click(function(){
+      chrome.tabs.sendMessage({greeting: "newTab", url: place.url }, function(response) {
+          console.log(response);
+        });
+        console.log("requesting");
+      });
 
     // Attaching a click event to the current marker
     google.maps.event.addListener( marker, "click", function(e) {
-        console.log(marker.title);
+          if (activeWindow !== "") {
+            activeWindow.close();
+          }
+          infowindow.open( yelpMap, marker );
+          activeWindow = infowindow ;
     });
+
+    google.maps.event.addListener( infowindow, "click", function(e) {
+           window.location.href=`${place.url}`;
+           console.log("redirect");
+    });
+
+}
+
+function calculateAverage() {
+  for(let i = 0; i < lats.length; i++) {
+    avgLat += lats[i];
+    avgLong += longs[i];
+  }
+
+  avgLat = (avgLat / lats.length);
+  avgLong = (avgLong/ lats.length);
+  console.log(avgLat, avgLong);
+}
+
+function loadURL(marker) {
+  console.log(marker.url);
+    return function () {
+        window.location.href = marker.url;
+    };
 }
 
 
@@ -88055,13 +88123,13 @@ function geocodeLatLng() {
 
     }
 // google.maps.event.addDomListener(window, 'load', initialize);
-//
-// //
+
+
 var tokens = {
   YELP_CONSUMER_KEY: 'gROY6FtEZekeyCt-XVlNyQ',
   YELP_CONSUMER_SECRET: '3_sHldcV2QelwHxXT7AuZETZV94',
-  YELP_TOKEN: 'Li50kGGnR12TaFW_OAumpKyTzV1RC8Bx',
-  YELP_TOKEN_SECRET: 'vER3Kb4R1haN9kRfViLHOIeJzO8',
+  YELP_TOKEN: 'oUEY96ItfHYXqzFeZ0MDwgUsmn0L6atQ',
+  YELP_TOKEN_SECRET: 'bZ5hmABbBKmgnpfJ4tNuF2T1IJs',
 };
 
 
@@ -88083,8 +88151,9 @@ function setYelp(location) {
 
   var default_parameters = {
     location: location,
-    sort: '1',
-    radius_filter: '2000'
+    sort: '2',
+    term: 'food',
+    radius_filter: '1000'
   };
 
   /* We set the require parameters here */
@@ -88122,7 +88191,7 @@ function setYelp(location) {
     console.log(response);
     console.log(error);
     let jBody = JSON.parse(body);
-    console.log(jBody.businesses[0]);
+    console.log(jBody);
     initialize(jBody.businesses);
   });
 }
@@ -88137,22 +88206,5 @@ function setYelpListings(body) {
     }
     initialize();
   }
-
-// google.maps.event.addDomListener(window, 'load', initialize);
-// google.maps.event.trigger(yelpMap, 'resize');
-
-// function addMarkers(latitude, long) {
-//
-//   console.log(latLng);
-//   var marker = new google.maps.Marker({
-//      position: latLng,
-//      yelpMap
-//    });
-//   google.maps.event.addListener(marker, 'click', function() {
-//   });
-//   console.log(yelpMap);
-//   markers.push(marker);
-//   console.log(markers);
-//   }
 
 },{"lodash":266,"nonce":270,"oauth-signature":272,"querystring":131,"request":280}]},{},[339]);

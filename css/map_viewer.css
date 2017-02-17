@@ -1,5 +1,28 @@
 #map{
-  height: 500px;
-  width: 400px;
+  height: 600px;
+  width: 500px;
+}
+#content{
+  display: flex;
+  flex-direction: row;
+}
 
+#firstHeading{
+font-size: 14px;
+color: #2A77EA;
+font-weight: bold;
+}
+
+#bodyContent h3{
+  font-size: 10px;
+  color: #696969;
+}
+
+#bodyContent h2 {
+  font-size: 12px;
+  padding-bottom: -5px;
+}
+
+#categories{
+  overflow: scroll;
 }
