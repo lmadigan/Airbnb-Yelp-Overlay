@@ -19,6 +19,7 @@ Sushi Attack! was implemented with the following technologies:
 ![](/docs/sausalito_video.mov)
 ![](/docs/example.png)
 
+Parses through webpage content to find geolocation of the Airbnb Listing. It then uses this location to generate a request to `https://api.yelp.com/v2/search` and queries for listings within a 1 mile radius of the Airbnb Listing. It translates the response into JSON, so that it can be easily formatted as listings on a Google Map. 
 
 
 ## Future Features
