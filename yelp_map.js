@@ -67,21 +67,25 @@ function addPlace( place ) {
 
     var address1 = place.location.display_address[0] !== undefined ? place.location.display_address[0] : "";
     var address2 = place.location.display_address[1] !== undefined ? place.location.display_address[1] : "";
+    var photo = place.image_url !== undefined ? place.image_url : "";
+
+    var dist = google.maps.geometry.spherical.computeDistanceBetween ({lat: la, lng: lo}, myLatlng);
 
 
     var contentString = `<div id="content">`+
       '<div id="siteNotice">'+
-      `<h1 id="firstHeading" class="firstHeading">${place.name}</h1>`+
+      `<a href=${place.url} target="_blank" id="firstHeading">${place.name}</a>` +
       '<div id="bodyContent">'+
       `<img src=${place.rating_img_url} alt="stars" height="20" width="105">` +
       `<h3>${place.review_count} reviews </h3>` +
       `<h2 id="categories">${place.categories}</h2>` +
       `<h2>${address1}</h2>` +
       `<h2>${address2}</h2>` +
+      `<h3>Distance from Rental: ${dist}</h2>` +
       '</div>'+
       '</div>'+
       '<div id="photo-content">' +
-      `<img src=${place.image_url} alt="image" height="125" width="120">` +
+      `<img src=${photo} alt="image" height="125" width="auto">` +
       '</div>' +
       '</div>';
 
@@ -92,8 +96,9 @@ function addPlace( place ) {
 
 
     $('#content').click(function(){
-      chrome.tabs.sendMessage({greeting: "newTab", url: place.url }, function(response) {
+      chrome.tabs.create({active: true, url: place.url }, function(response) {
           console.log(response);
+          console.log("response");
         });
         console.log("requesting");
       });
@@ -107,12 +112,15 @@ function addPlace( place ) {
           activeWindow = infowindow ;
     });
 
-    google.maps.event.addListener( infowindow, "click", function(e) {
-           window.location.href=`${place.url}`;
-           console.log("redirect");
-    });
-
 }
+
+function openTab(){
+  chrome.tabs.create({active: true, url: "https://www.airbnb.com/" }, function(response) {
+      console.log(response);
+      console.log("response");
+    });
+    console.log("requesting");
+  }
 
 function calculateAverage() {
   for(let i = 0; i < lats.length; i++) {

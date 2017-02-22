@@ -6,7 +6,7 @@
 
 ## Architecture and Technologies
 
-Sushi Attack! was implemented with the following technologies:
+Airbnb Yelp Overlay! was implemented with the following technologies:
 
  - `Vanilla JavaScript` for chrome extension layout and formatting
  - `Google Maps API` for creating visible map
