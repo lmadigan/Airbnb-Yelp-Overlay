@@ -27,4 +27,4 @@ Future directions for this chrome extension:
 - Allow for users to look up Yelp listings by name
 - Toggle search by category
 - Integrate TripAdvisor API
-- Make project open source & gain popularity
+- Make project open source 

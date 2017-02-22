@@ -68,8 +68,9 @@ function addPlace( place ) {
     var address1 = place.location.display_address[0] !== undefined ? place.location.display_address[0] : "";
     var address2 = place.location.display_address[1] !== undefined ? place.location.display_address[1] : "";
     var photo = place.image_url !== undefined ? place.image_url : "";
-
-    var dist = google.maps.geometry.spherical.computeDistanceBetween ({lat: la, lng: lo}, myLatlng);
+    var thisLatLng = new google.maps.LatLng(la, lo);
+    var dist = google.maps.geometry.spherical.computeDistanceBetween (thisLatLng, myLatlng);
+    dist = (dist/1609.34).toFixed(2);
 
 
     var contentString = `<div id="content">`+
@@ -81,7 +82,7 @@ function addPlace( place ) {
       `<h2 id="categories">${place.categories}</h2>` +
       `<h2>${address1}</h2>` +
       `<h2>${address2}</h2>` +
-      `<h3>Distance from Rental: ${dist}</h2>` +
+      `<h3>Distance from Rental: ${dist} miles</h2>` +
       '</div>'+
       '</div>'+
       '<div id="photo-content">' +
@@ -92,16 +93,6 @@ function addPlace( place ) {
     var infowindow = new google.maps.InfoWindow({
     content: contentString
   });
-
-
-
-    $('#content').click(function(){
-      chrome.tabs.create({active: true, url: place.url }, function(response) {
-          console.log(response);
-          console.log("response");
-        });
-        console.log("requesting");
-      });
 
     // Attaching a click event to the current marker
     google.maps.event.addListener( marker, "click", function(e) {
@@ -114,13 +105,7 @@ function addPlace( place ) {
 
 }
 
-function openTab(){
-  chrome.tabs.create({active: true, url: "https://www.airbnb.com/" }, function(response) {
-      console.log(response);
-      console.log("response");
-    });
-    console.log("requesting");
-  }
+
 
 function calculateAverage() {
   for(let i = 0; i < lats.length; i++) {
@@ -131,13 +116,6 @@ function calculateAverage() {
   avgLat = (avgLat / lats.length);
   avgLong = (avgLong/ lats.length);
   console.log(avgLat, avgLong);
-}
-
-function loadURL(marker) {
-  console.log(marker.url);
-    return function () {
-        window.location.href = marker.url;
-    };
 }
 
 
@@ -241,4 +219,10 @@ function setYelpListings(body) {
       latLongs.push({lat: yelpLat, lng: yelpLong});
     }
     initialize();
+  }
+
+
+  function round(value, precision) {
+      var multiplier = Math.pow(10, precision || 0);
+      return Math.round(value * multiplier) / multiplier;
   }

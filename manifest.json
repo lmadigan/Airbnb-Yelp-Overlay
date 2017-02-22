@@ -1,6 +1,6 @@
 {
   "name": "Airbnb Yelp Overlay",
-  "version": "1.2",
+  "version": "1.3",
   "manifest_version": 2,
   "description" : "Airbnb listings shown on a map with Yelp Listings",
   "permissions": [
