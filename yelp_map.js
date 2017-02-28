@@ -16,6 +16,12 @@ let avgLat = 0;
 let avgLong = 0;
 let activeWindow = "";
 
+
+// var yelpConsumerKey = tokens.MY_KEY;
+// var yelpConsumerSecret = tokens.SECRET_KEY;
+// var yelpToken = tokens.SECRET_KEY;
+// var yelpTokenSecret = tokens.SECRET_KEY;
+
 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
     lat = response.lat;
@@ -137,15 +143,6 @@ function geocodeLatLng() {
 
     }
 // google.maps.event.addDomListener(window, 'load', initialize);
-
-
-var tokens = {
-  YELP_CONSUMER_KEY: 'gROY6FtEZekeyCt-XVlNyQ',
-  YELP_CONSUMER_SECRET: '3_sHldcV2QelwHxXT7AuZETZV94',
-  YELP_TOKEN: 'oUEY96ItfHYXqzFeZ0MDwgUsmn0L6atQ',
-  YELP_TOKEN_SECRET: 'bZ5hmABbBKmgnpfJ4tNuF2T1IJs',
-};
-
 
 /* Function for yelp call
  * ------------------------
