@@ -17,11 +17,6 @@ let avgLong = 0;
 let activeWindow = "";
 
 
-// var yelpConsumerKey = tokens.MY_KEY;
-// var yelpConsumerSecret = tokens.SECRET_KEY;
-// var yelpToken = tokens.SECRET_KEY;
-// var yelpTokenSecret = tokens.SECRET_KEY;
-
 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
     lat = response.lat;
@@ -82,6 +77,7 @@ function addPlace( place ) {
     var contentString = `<div id="content">`+
       '<div id="siteNotice">'+
       `<a href=${place.url} target="_blank" id="firstHeading">${place.name}</a>` +
+      `<br/>` +
       '<div id="bodyContent">'+
       `<img src=${place.rating_img_url} alt="stars" height="20" width="105">` +
       `<h3>${place.review_count} reviews </h3>` +
